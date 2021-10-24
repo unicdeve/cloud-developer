@@ -27,6 +27,14 @@ directory and run:
 1. Initialize a new project: `npm i`
 2. run the development server with `npm run dev`
 
+#### Project live URL
+
+http://image-filter-dev22.us-east-1.elasticbeanstalk.com
+
+##### testing
+
+http://image-filter-dev22.us-east-1.elasticbeanstalk.com/filteredimage?image_url=https://media.istockphoto.com/photos/closeup-of-cat-face-fauna-background-picture-id486983606?s=612x612
+
 #### EB Deployment success screenshot
 
 ![image-filter-success](./deployment_screenshots/image-filter-success.png)

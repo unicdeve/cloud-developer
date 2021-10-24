@@ -18,7 +18,7 @@ import { deleteLocalFiles, filterImageFromURL } from './util/util';
 
 		if (!imageUrl) {
 			return res
-				.status(404)
+				.status(400)
 				.json({ error: 'You need to pass a valid image_url!' });
 		}
 
@@ -30,7 +30,7 @@ import { deleteLocalFiles, filterImageFromURL } from './util/util';
 			});
 		} catch (e) {
 			console.error(e);
-			res.status(400).send(e);
+			res.status(422).send(e);
 		}
 	});
 
