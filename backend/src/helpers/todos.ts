@@ -1,5 +1,5 @@
 import { TodosAccess } from './todosAcess'
-import { AttachmentUtils } from './attachmentUtils';
+import { AttachmentUtils } from './attachmentUtils'
 import { TodoItem } from '../models/TodoItem'
 import { CreateTodoRequest } from '../requests/CreateTodoRequest'
 import { UpdateTodoRequest } from '../requests/UpdateTodoRequest'
@@ -8,3 +8,4 @@ import * as uuid from 'uuid'
 import * as createError from 'http-errors'
 
 // TODO: Implement businessLogic
+const logger = createLogger('auth')
