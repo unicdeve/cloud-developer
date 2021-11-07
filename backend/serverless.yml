@@ -1,7 +1,6 @@
-# TODO: Change the name of the org
-org: sudkul
+org: unicdev
 app: serverless-todo-app
-service: serverless-todo-app
+service: aws
 
 plugins:
   - serverless-webpack
@@ -40,6 +39,17 @@ provider:
             - xray:PutTelemetryRecords
             - xray:PutTraceSegments
           Resource: '*'
+        - Effect: Allow
+          Action:
+            - codedeploy:*
+          Resource:
+            - '*'
+        - Effect: Allow
+          Action:
+            - dynamodb:Scan
+            - dynamodb:PutItem
+            - dynamodb:GetItem
+          Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}
 
 functions:
   Auth:
