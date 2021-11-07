@@ -202,8 +202,14 @@ resources:
             AttributeType: S
           - AttributeName: todoId
             AttributeType: S
+          - AttributeName: name
+            AttributeType: S
           - AttributeName: createdAt
             AttributeType: S
+          - AttributeName: dueDate
+            AttributeType: S
+          - AttributeName: done
+            AttributeType: B
         KeySchema:
           - AttributeName: userId
             KeyType: HASH

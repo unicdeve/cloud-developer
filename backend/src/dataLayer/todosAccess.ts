@@ -8,6 +8,7 @@ const logger = createLogger('auth')
 
 import { TodoItem } from '../models/TodoItem'
 import { createLogger } from '../utils/logger'
+import { TodoUpdate } from '../models/TodoUpdate'
 
 export class TodosAccess {
   constructor(
@@ -41,6 +42,40 @@ export class TodosAccess {
       .promise()
 
     return todo
+  }
+
+  async updateTodo(todo: TodoUpdate, todoId: string, userId: string) {
+    logger.info(`Update a todo`, {
+      todoId: todoId,
+      userId: userId
+    })
+
+    const params = {
+      TableName: this.todosTable,
+      Key: {
+        userId: userId,
+        todoId: todoId
+      },
+      ExpressionAttributeNames: {
+        '#todo_name': 'name'
+      },
+      ExpressionAttributeValues: {
+        ':name': todo.name,
+        ':dueDate': todo.dueDate,
+        ':done': todo.done
+      },
+      UpdateExpression:
+        'SET #todo_name = :name, done = :done, dueDate = :dueDate',
+      ReturnValues: 'ALL_NEW'
+    }
+
+    const result = await this.docClient.update(params).promise()
+
+    logger.info(`Update statement has completed without error`, {
+      result: result
+    })
+
+    return result.Attributes as TodoItem
   }
 }
 
