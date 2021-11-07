@@ -1,10 +1,12 @@
 import * as uuid from 'uuid'
 import { TodosAccess } from '../dataLayer/todosAccess'
+import { ImageAccess } from '../dataLayer/imageAccess'
 import { TodoItem } from '../models/TodoItem'
 import { CreateTodoRequest } from '../requests/CreateTodoRequest'
 import { UpdateTodoRequest } from '../requests/UpdateTodoRequest'
 
 const todosAccess = new TodosAccess()
+const imageAccess = new ImageAccess()
 
 export const createTodo = async (
   createTodoRequest: CreateTodoRequest,
@@ -36,4 +38,15 @@ export async function updateTodo(
 
 export async function deleteTodo(todoId: string, userId: string) {
   return await todosAccess.deleteTodo(todoId, userId)
+}
+
+export async function createAttachmentPresignedUrl(
+  todoId: string,
+  userId: string
+): Promise<string> {
+  const url = await imageAccess.getUploadUrl(todoId)
+
+  // Write final url to datastore
+  await todosAccess.updateTodoUrl(todoId, userId)
+  return url
 }

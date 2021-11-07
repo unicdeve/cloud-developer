@@ -13,7 +13,8 @@ import { TodoUpdate } from '../models/TodoUpdate'
 export class TodosAccess {
   constructor(
     private readonly docClient: DocumentClient = createDynamoDBClient(),
-    private readonly todosTable = process.env.TODOS_TABLE
+    private readonly todosTable = process.env.TODOS_TABLE,
+    private readonly bucketName = process.env.IMAGES_S3_BUCKET
   ) {}
 
   async getUserTodos(userId: string): Promise<TodoItem[]> {
@@ -95,6 +96,39 @@ export class TodosAccess {
       .promise()
 
     logger.info(`${todoId} was deleted successfully`)
+  }
+
+  async updateTodoUrl(todoId: string, userId: string) {
+    logger.info(`Updating a todo's URL for item:`, {
+      todoId: todoId,
+      userId: userId
+    })
+
+    const url = `https://${this.bucketName}.s3.amazonaws.com/${todoId}`
+
+    const params = {
+      TableName: this.todosTable,
+      Key: {
+        userId: userId,
+        todoId: todoId
+      },
+      ExpressionAttributeNames: {
+        '#todo_attachmentUrl': 'attachmentUrl'
+      },
+      ExpressionAttributeValues: {
+        ':attachmentUrl': url
+      },
+      UpdateExpression: 'SET #todo_attachmentUrl = :attachmentUrl',
+      ReturnValues: 'ALL_NEW'
+    }
+
+    const result = await this.docClient.update(params).promise()
+
+    logger.info(`Successfully updated attachmentUrl in todo`, {
+      result: result
+    })
+
+    return result.Attributes as TodoItem
   }
 }
 
