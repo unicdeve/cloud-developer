@@ -16,10 +16,10 @@ export class ImageAccess {
     )
   ) {}
 
-  async getUploadUrl(imageId: string): Promise<string> {
+  async getUploadUrl(todoId: string): Promise<string> {
     const uploadUrl = this.s3.getSignedUrl('putObject', {
       Bucket: this.bucketName,
-      Key: imageId,
+      Key: todoId,
       Expires: this.presignedUrlExpiration
     })
 

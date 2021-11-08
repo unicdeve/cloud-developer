@@ -15,7 +15,7 @@ export class TodosAccess {
   constructor(
     private readonly docClient: DocumentClient = createDynamoDBClient(),
     private readonly todosTable = process.env.TODOS_TABLE,
-    private readonly bucketName = process.env.IMAGES_S3_BUCKET
+    private readonly bucketName = process.env.ATTACHMENT_S3_BUCKET
   ) {}
 
   async getUserTodos(userId: string): Promise<TodoItem[]> {
