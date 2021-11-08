@@ -10,7 +10,7 @@ export const handler = middy(
   async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     const newTodo: CreateTodoRequest = JSON.parse(event.body)
     const userId = await getUserId(event)
-    const newItem = createTodo(newTodo, userId)
+    const newItem = await createTodo(newTodo, userId)
 
     return {
       statusCode: 201,
