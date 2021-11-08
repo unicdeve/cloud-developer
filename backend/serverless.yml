@@ -22,7 +22,7 @@ provider:
   environment:
     TODOS_TABLE: Todos-${self:provider.stage}
     TODOS_CREATED_AT_INDEX: CreatedAtIndex
-    ATTACHMENT_S3_BUCKET: serverless-481932773375-todo-images-${self:provider.stage}
+    ATTACHMENT_S3_BUCKET: serverless-481932773375-todosss-images-${self:provider.stage}
     PRESIGNED_URL_EXPIRATION: 300
 
   logs:

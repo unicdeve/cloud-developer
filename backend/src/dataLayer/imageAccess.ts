@@ -1,11 +1,15 @@
 import * as AWS from 'aws-sdk'
 import { createLogger } from '../utils/logger'
 
+import * as AWSXRay from 'aws-xray-sdk'
+
+const XAWS = AWSXRay.captureAWS(AWS)
+
 const logger = createLogger('fileAccess')
 
 export class ImageAccess {
   constructor(
-    private readonly s3: AWS.S3 = new AWS.S3({ signatureVersion: 'v4' }),
+    private readonly s3: AWS.S3 = new XAWS.S3({ signatureVersion: 'v4' }),
     private readonly bucketName = process.env.IMAGES_S3_BUCKET,
     private readonly presignedUrlExpiration: Number = parseInt(
       process.env.PRESIGNED_URL_EXPIRATION
