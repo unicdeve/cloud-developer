@@ -11,7 +11,7 @@ export class ImageAccess {
   constructor(
     private readonly s3: AWS.S3 = new XAWS.S3({ signatureVersion: 'v4' }),
     private readonly bucketName = process.env.IMAGES_S3_BUCKET,
-    private readonly presignedUrlExpiration: Number = parseInt(
+    private readonly presignedUrlExpiration: number = parseInt(
       process.env.PRESIGNED_URL_EXPIRATION
     )
   ) {}

@@ -26,6 +26,10 @@ export const handler = middy(
 
       return {
         statusCode: 204,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Credentials': true
+        },
         body: JSON.stringify({
           updatedTodo
         })
@@ -33,6 +37,10 @@ export const handler = middy(
     } catch (e) {
       return {
         statusCode: 404,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Credentials': true
+        },
         body: `error ${e.message}`
       }
     }

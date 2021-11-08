@@ -20,11 +20,19 @@ export const handler = middy(
       await deleteTodo(todoId, userId)
       return {
         statusCode: 204,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Credentials': true
+        },
         body: `Successfully deleted todo with id ${todoId}`
       }
     } catch (e) {
       return {
         statusCode: 404,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Credentials': true
+        },
         body: `error ${e.message}`
       }
     }

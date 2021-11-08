@@ -46,7 +46,7 @@ export async function createAttachmentPresignedUrl(
 ): Promise<string> {
   const url = await imageAccess.getUploadUrl(todoId)
 
-  // Write final url to datastore
+  // Write final url to todo DB
   await todosAccess.updateTodoUrl(todoId, userId)
   return url
 }

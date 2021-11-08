@@ -7,6 +7,8 @@ import Axios from 'axios'
 import { Jwt } from '../../auth/Jwt'
 import { JwtPayload } from '../../auth/JwtPayload'
 
+const jwkToPem = require('jwk-to-pem')
+
 const logger = createLogger('auth')
 
 const jwksUrl = 'https://dev-8ad8olgg.us.auth0.com/.well-known/jwks.json'
@@ -54,27 +56,27 @@ export const handler = async (
 async function verifyToken(authHeader: string): Promise<JwtPayload> {
   const token = getToken(authHeader)
   const { data: jwks } = await Axios.get(jwksUrl)
+  const jwt: Jwt = decode(token, { complete: true }) as Jwt
 
   const keys: any[] = jwks.keys
-  const jwt: Jwt = decode(token, { complete: true }) as Jwt
-  const signingKeys = keys
-    .filter(
-      (key) =>
-        key.use === 'sig' &&
-        key.kty === 'RSA' &&
-        key.kid &&
-        key.x5c &&
-        key.x5c.length
-    )
-    .map((key) => {
-      return { kid: key.kid, nbf: key.nbf, x5c: key.x5c[0] }
-    })
-  const signingKey = signingKeys.find((key) => key.kid === jwt.header.kid)
-  let certValue: string = signingKey.x5c
+  // const signingKeys = keys
+  //   .filter(
+  //     (key) =>
+  //       key.use === 'sig' &&
+  //       key.kty === 'RSA' &&
+  //       key.kid &&
+  //       key.x5c &&
+  //       key.x5c.length
+  //   )
+  //   .map((key) => {
+  //     return { kid: key.kid, nbf: key.nbf, x5c: key.x5c[0] }
+  //   })
+  const signingKey = keys.find((key) => key.kid === jwt.header.kid)
+  if (!signingKey) {
+    throw new Error('Invalid Signing key')
+  }
 
-  certValue = certValue.match(/.{1,64}/g).join('\n')
-  const finalCertKey: string = `-----BEGIN CERTIFICATE-----\n${certValue}\n-----END CERTIFICATE-----\n`
-  let jwtPayload: JwtPayload = verify(token, finalCertKey, {
+  let jwtPayload: JwtPayload = verify(token, jwkToPem(signingKey), {
     algorithms: ['RS256']
   }) as JwtPayload
 
