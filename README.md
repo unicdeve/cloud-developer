@@ -3,7 +3,6 @@
 This is the last project of the Udacity Cloud Developer Nanodegree course. This project uses the TODO Serverless project as a starting point in which improvements like
 
 - package individual was enabled
-- carnary deployment was enabled
 - added cloudwatch to take note of how long each function takes to run
 
 # Functions to be implemented
