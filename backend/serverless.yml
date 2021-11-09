@@ -8,6 +8,7 @@ plugins:
   - serverless-plugin-tracing
   - serverless-reqvalidator-plugin
   - serverless-aws-documentation
+  - serverless-plugin-canary-deployments
 
 package:
   individually: true
@@ -79,6 +80,9 @@ functions:
           path: todos
           cors: true
           authorizer: Auth
+    deploymentSettings:
+      type: Linear10PercentEvery1Minute
+      alias: Live
     iamRoleStatements:
       - Effect: Allow
         Action:
@@ -99,6 +103,9 @@ functions:
             description: Create a todo
             requestModels:
               'application/json': CreateTodoRequest
+    deploymentSettings:
+      type: Linear10PercentEvery1Minute
+      alias: Live
     iamRoleStatements:
       - Effect: Allow
         Action:
@@ -119,6 +126,9 @@ functions:
             description: Update a specific todo
             requestModels:
               'application/json': UpdateTodoRequest
+    deploymentSettings:
+      type: Linear10PercentEvery1Minute
+      alias: Live
     iamRoleStatements:
       - Effect: Allow
         Action:
@@ -136,6 +146,9 @@ functions:
           documentation:
             summary: Delete a todo
             description: Delete a todo
+    deploymentSettings:
+      type: Linear10PercentEvery1Minute
+      alias: Live
     iamRoleStatements:
       - Effect: Allow
         Action:
@@ -150,6 +163,9 @@ functions:
           path: todos/{todoId}/attachment
           cors: true
           authorizer: Auth
+    deploymentSettings:
+      type: Linear10PercentEvery1Minute
+      alias: Live
     iamRoleStatements:
       - Effect: Allow
         Action:
