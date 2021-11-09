@@ -5,20 +5,35 @@ import { cors } from 'middy/middlewares'
 import 'source-map-support/register'
 import { createTodo } from '../../businessLogic/todos'
 import { CreateTodoRequest } from '../../requests/CreateTodoRequest'
-import { isEmpty } from '../../utils/isEmpty'
-import { getUserId } from '../utils'
+import { getUserId, timeInMs } from '../utils'
 
 const cloudwatch = new AWS.CloudWatch()
 
 export const handler = middy(
   async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
+    const startTime = timeInMs()
     const newTodo: CreateTodoRequest = JSON.parse(event.body)
     const userId = await getUserId(event)
-    const newItem = await createTodo(newTodo, userId)
 
-    // do not await this, not to keep the user waiting
-    cloudwatch
-      .putMetricData({
+    try {
+      const newItem = await createTodo(newTodo, userId)
+
+      return {
+        statusCode: 201,
+        body: JSON.stringify({
+          newItem
+        })
+      }
+    } catch (e) {
+      return {
+        statusCode: 400,
+        body: `error ${e.message}`
+      }
+    } finally {
+      const endTime = timeInMs()
+      const totalTime = endTime - startTime
+      // do not await this, not to keep the user waiting
+      cloudwatch.putMetricData({
         MetricData: [
           {
             MetricName: 'Success',
@@ -28,22 +43,11 @@ export const handler = middy(
                 Value: 'CreateTodoAPI'
               }
             ],
-            Unit: 'Count',
-            Value: isEmpty(newItem) ? 0 : 1
+            Unit: 'Milliseconds',
+            Value: totalTime
           }
         ],
         Namespace: 'Capstone/Serveless'
-      })
-      .promise()
-
-    return {
-      statusCode: 201,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Credentials': true
-      },
-      body: JSON.stringify({
-        newItem
       })
     }
   }
