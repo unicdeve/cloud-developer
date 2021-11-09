@@ -3,7 +3,10 @@
 This is the last project of the Udacity Cloud Developer Nanodegree course. This project uses the TODO Serverless project as a starting point in which improvements like
 
 - package individual was enabled
+  ![Alt text](images/package-individually.png?raw=true 'Packaged individually')
+
 - added cloudwatch to take note of how long each function takes to run
+  ![Alt text](images/package-latency.png?raw=true 'Latency')
 
 # Functions to be implemented
 
