@@ -1,14 +1,15 @@
-import 'source-map-support/register'
-
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda'
+import * as AWS from 'aws-sdk'
 import * as middy from 'middy'
 import { cors, httpErrorHandler } from 'middy/middlewares'
-
+import 'source-map-support/register'
 import { deleteTodo } from '../../businessLogic/todos'
-import { getUserId } from '../utils'
 import { createLogger } from '../../utils/logger'
+import { getUserId } from '../utils'
 
 const logger = createLogger('deleteTodo')
+
+const cloudwatch = new AWS.CloudWatch()
 
 export const handler = middy(
   async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
@@ -18,6 +19,22 @@ export const handler = middy(
 
     try {
       await deleteTodo(todoId, userId)
+      cloudwatch.putMetricData({
+        MetricData: [
+          {
+            MetricName: 'Success',
+            Dimensions: [
+              {
+                Name: 'ServiceName',
+                Value: 'DeleteTodoAPI'
+              }
+            ],
+            Unit: 'Count',
+            Value: 1
+          }
+        ],
+        Namespace: 'Capstone/Serveless'
+      })
       return {
         statusCode: 204,
         headers: {
@@ -27,6 +44,23 @@ export const handler = middy(
         body: `Successfully deleted todo with id ${todoId}`
       }
     } catch (e) {
+      cloudwatch.putMetricData({
+        MetricData: [
+          {
+            MetricName: 'Success',
+            Dimensions: [
+              {
+                Name: 'ServiceName',
+                Value: 'DeleteTodoAPI'
+              }
+            ],
+            Unit: 'Count',
+            Value: 0
+          }
+        ],
+        Namespace: 'Capstone/Serveless'
+      })
+
       return {
         statusCode: 404,
         headers: {

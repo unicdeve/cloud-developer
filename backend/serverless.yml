@@ -1,6 +1,6 @@
 org: unicdev
-app: serverless-todo-app
-service: serverless-todo-app
+app: serverless-capstone-app
+service: serverless-capstone-app
 
 plugins:
   - serverless-webpack
@@ -8,6 +8,9 @@ plugins:
   - serverless-plugin-tracing
   - serverless-reqvalidator-plugin
   - serverless-aws-documentation
+
+package:
+  individually: true
 
 provider:
   name: aws
@@ -24,7 +27,7 @@ provider:
   environment:
     TODOS_TABLE: Todos-${self:provider.stage}
     TODOS_CREATED_AT_INDEX: CreatedAtIndex
-    ATTACHMENT_S3_BUCKET: serverless-481932773375-todosss-images-${self:provider.stage}
+    ATTACHMENT_S3_BUCKET: serverless-481932773375-todo-images-${self:provider.stage}
     PRESIGNED_URL_EXPIRATION: 300
 
   logs:
@@ -156,7 +159,6 @@ functions:
 
 resources:
   Resources:
-    # Add necessary AWS resources. You will need at least the following AWS resources
     GatewayResponseDefault4XX:
       Type: AWS::ApiGateway::GatewayResponse
       Properties:
@@ -185,14 +187,8 @@ resources:
             AttributeType: S
           - AttributeName: todoId
             AttributeType: S
-          # - AttributeName: name
-          #   AttributeType: S
           - AttributeName: createdAt
             AttributeType: S
-          # - AttributeName: dueDate
-          #   AttributeType: S
-          # - AttributeName: done
-          #   AttributeType: B
         KeySchema:
           - AttributeName: userId
             KeyType: HASH
